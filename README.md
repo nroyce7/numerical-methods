@@ -7,7 +7,10 @@ A repository of numerical methods meant for educational purposes. I am prioritiz
 - Runge-Kutta (4th Order)
 
 ## Root Finding
+- Bisection Method
+- Method of False Position
 - Newton's Method
+- Secant Method
 
 ## Linear Algebra
 
