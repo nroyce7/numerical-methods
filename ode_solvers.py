@@ -1,6 +1,5 @@
 import numpy as np
 
-#push test
 def euler(f, y_0, a, b, n):
     '''
     Uses euler's method to approximate IVPs
