@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def euler(f, y_0, a, b, n):
     '''
     Uses euler's method to approximate IVPs
@@ -22,6 +23,7 @@ def euler(f, y_0, a, b, n):
         ty[i+1] = [t,y]
 
     return ty
+
 
 def rk4(f, y_0, a, b, n):
     h = (b-a)/n # step size

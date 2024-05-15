@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def bisection_method(f, a, b, tol = 1e-4, max_itr = 100):
     if f(a)*f(b) > 0:
         print('Root not in interval')
@@ -17,6 +18,7 @@ def bisection_method(f, a, b, tol = 1e-4, max_itr = 100):
             return c
     print('Maximum iterations reached')
     return c
+
 
 def false_position(f, a, b, tol = 1e-4, max_itr = 100):
     if f(a)*f(b) > 0:
@@ -37,6 +39,7 @@ def false_position(f, a, b, tol = 1e-4, max_itr = 100):
     print('Maximum iterations reached')
     return c
 
+
 def newton_method(f, f_prime, x_0, tol = 1e-4, max_itr = 100):
     x = x_0
     for i in range(max_itr):
@@ -50,6 +53,7 @@ def newton_method(f, f_prime, x_0, tol = 1e-4, max_itr = 100):
         
     print('Maximum iterations reached')
     return x
+
 
 def secant_method(f, x_0, x_1, tol = 1e-4, max_itr = 100):
     for i in range(max_itr):
