@@ -91,4 +91,7 @@ print(f"R^2 (test)   = {lasso.R2(stats_test, challenge_test):.3f}")
 print(f"RMSE (test)  = {lasso.RMSE(stats_test, challenge_test):.3f}")
 print("=" * 160)
 
+test = ml_lib.PCA(monster_stats)
+print(test.scalar_num_dim())
+
 

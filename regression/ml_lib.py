@@ -3,32 +3,76 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-class SimpleLinear(object):
+class SimpleLinear:
+    """
+    Object that constructs a simple linear regression model.
+    """
     def __init__(self, x, y):
+        """ Initializes regression model
+        Parameters:
+            -x: This is an array that holds the independent variable (1 variable, m observations)
+            -y: This is an array that holds the dependent variable (1 variable, m observations)
+        """
+
         self.x = np.copy(x)
         self.y = np.copy(y)
-        x_avg = np.average(x)
+
+        x_avg = np.average(x)   # averages used to center data in calculation
         y_avg = np.average(y)
+
         self.beta = np.zeros(2)
         self.beta[1] = np.dot(x - x_avg, y - y_avg) / np.dot(x - x_avg, x - x_avg)
         self.beta[0] = y_avg - self.beta[1] * x_avg
+
         self.RMSE_train = np.sqrt(np.average((y - (self.beta[1] * x + self.beta[0])) ** 2.0))
         self.R2_train = 1.0 - self.RMSE_train ** 2.0 / np.average((y - y_avg) ** 2.0)
 
     def predict(self, x):
+        """ Calculates predictions given constructed model
+        Parameters:
+            -x: This is an array that holds the independent variable (generally a sample of the data used to construct)
+
+        Returns:
+            Calculated dependent variable
+        """
+
         return self.beta[1] * x + self.beta[0]
 
     def RMSE(self, x=None, y=None):
+        """ Calculates the Root Mean Square Error of the Model
+        Parameters:
+            -x: This is an array that holds the independent variable (generally a sample of the data used to construct)
+            -y: This is an array that holds the dependent variable (generally a sample of the data used to construct)
+
+        Returns:
+            Root Mean Square Error of test-train-split or of the training data if nothing is given
+        """
+
         if x is None or y is None:
             return self.RMSE_train
         return np.sqrt(np.average((self.predict(x) - y) ** 2.0))
 
     def R2(self, x=None, y=None):
+        """ Calculates the R^2 of the Model
+        Parameters:
+            -x: This is an array that holds the independent variable (generally a sample of the data used to construct)
+            -y: This is an array that holds the dependent variable (generally a sample of the data used to construct)
+
+        Returns:
+            R^2 of test-train-split or of the training data if nothing is given
+        """
+
         if x is None or y is None:
             return self.R2_train
         return 1.0 - self.RMSE(x, y) ** 2.0 / np.average((y - np.average(y)) ** 2.0)
 
     def plot(self, x=None, y=None):
+        """ Displays a plot of the data and regression model
+        Parameters:
+            -x: This is an array that holds the independent variable (generally a sample of the data used to construct)
+            -y: This is an array that holds the dependent variable (generally a sample of the data used to construct)
+
+        """
         if x is None or y is None:
             x = self.x
             y = self.y
@@ -38,8 +82,18 @@ class SimpleLinear(object):
         plt.show()
 
 
-class MultipleLinear(object):
+class MultipleLinear:
+    """
+    Object that constructs a multiple linear regression model.
+    """
+
     def __init__(self, X, y):
+        """ Initializes regression model
+        Parameters:
+            -x: This is an array that holds the independent variables (n variables, m observations)
+            -y: This is an array that holds the dependent variable (1 variable, m observations)
+        """
+
         design_matrix = np.append(np.ones((X.shape[0], 1)), X, axis=-1)
         self.cov = design_matrix.T @ design_matrix
         self.beta = np.linalg.inv(self.cov) @ design_matrix.T @ y
@@ -47,21 +101,59 @@ class MultipleLinear(object):
         self.R2_train = 1.0 - self.RMSE_train ** 2.0 / np.average((y - np.average(y)) ** 2.0)
 
     def predict(self, X):
+        """ Calculates predictions given constructed model
+        Parameters:
+            -x: This is an array that holds the independent variables (generally a sample of the data used to construct)
+
+        Returns:
+            Calculated dependent variable
+        """
+
         return X @ self.beta[1:] + self.beta[0]
 
     def RMSE(self, X=None, y=None):
+        """ Calculates the Root Mean Square Error of the Model
+        Parameters:
+            -x: This is an array that holds the independent variables (generally a sample of the data used to construct)
+            -y: This is an array that holds the dependent variable (generally a sample of the data used to construct)
+
+        Returns:
+            Root Mean Square Error of test-train-split or of the training data if nothing is given
+        """
+
         if X is None or y is None:
             return self.RMSE_train
         return np.sqrt(np.average((self.predict(X) - y) ** 2.0))
 
     def R2(self, X=None, y=None):
+        """ Calculates the R^2 of the Model
+        Parameters:
+            -x: This is an array that holds the independent variable (generally a sample of the data used to construct)
+            -y: This is an array that holds the dependent variable (generally a sample of the data used to construct)
+
+        Returns:
+            R^2 of test-train-split or of the training data if nothing is given
+        """
+
         if X is None or y is None:
             return self.R2_train
         return 1.0 - self.RMSE(X, y) ** 2.0 / np.average((y - np.average(y)) ** 2.0)
 
 
-class Ridge(object):
+class Ridge:
+    """
+    Object that constructs a ridge regression model. This will use an L2 regularization scheme that penalizes the
+    sum of the squares of the weights. Unlike LASSO this will never bring a weight to zero.
+    """
+
     def __init__(self, X, y, alpha=1.0):
+        """ Initializes regression model
+        Parameters:
+            -x: This is an array that holds the independent variables (n variables, m observations)
+            -y: This is an array that holds the dependent variable (1 variable, m observations)
+            -alpha: Regularization parameter (how much to add to diagonal)
+        """
+
         design_matrix = np.append(np.ones((X.shape[0], 1)), X, axis=-1)
         self.cov = design_matrix.T @ design_matrix
         regularization = alpha * np.identity(self.cov.shape[0])
@@ -71,28 +163,67 @@ class Ridge(object):
         self.R2_train = 1.0 - self.RMSE_train ** 2.0 / np.average((y - np.average(y)) ** 2.0)
 
     def predict(self, X):
+        """ Calculates predictions given constructed model
+        Parameters:
+            -x: This is an array that holds the independent variables (generally a sample of the data used to construct)
+
+        Returns:
+            Calculated dependent variable
+        """
         return X @ self.beta[1:] + self.beta[0]
 
     def RMSE(self, X=None, y=None):
+        """ Calculates the Root Mean Square Error of the Model
+        Parameters:
+            -x: This is an array that holds the independent variables (generally a sample of the data used to construct)
+            -y: This is an array that holds the dependent variable (generally a sample of the data used to construct)
+
+        Returns:
+            Root Mean Square Error of test-train-split or of the training data if nothing is given
+        """
+
         if X is None or y is None:
             return self.RMSE_train
         return np.sqrt(np.average((self.predict(X) - y) ** 2.0))
 
     def R2(self, X=None, y=None):
+        """ Calculates the R^2 of the Model
+        Parameters:
+            -x: This is an array that holds the independent variable (generally a sample of the data used to construct)
+            -y: This is an array that holds the dependent variable (generally a sample of the data used to construct)
+
+        Returns:
+            R^2 of test-train-split or of the training data if nothing is given
+        """
+
         if X is None or y is None:
             return self.R2_train
         return 1.0 - self.RMSE(X, y) ** 2.0 / np.average((y - np.average(y)) ** 2.0)
 
 
-class Lasso(object):
+class Lasso:
+    """
+    Object that constructs a LASSO regression model. This will use an L1 regularization scheme that penalizes the
+    sum of the absolute value of the weights. Unlike ridge this can bring a weight to zero.
+    """
+
     def __init__(self, X, y, alpha=1.0, TOL=1e-3, MAX=500):
+        """ Initializes regression model
+        Parameters:
+            -x: This is an array that holds the independent variables (n variables, m observations)
+            -y: This is an array that holds the dependent variable (1 variable, m observations)
+            -alpha: L1 Regularization parameter
+            -TOL: The allowed tolerance for the approximate optimization
+            -MAX: The maximum allowed iterations in the approximate optimization
+        """
+
         # Center the data
         X_average = np.average(X, axis=0)
         X_centered = X - X_average
         y_average = np.average(y)
         y_centered = y - y_average
 
-        self.cov = np.array(X_centered.T @ X_centered)      # Casting this to a numpy array prevents dataframe input from crashing
+        self.cov = np.array(X_centered.T @ X_centered)     # Casting this to a numpy array prevents dataframe input from crashing
         design_at_y = X_centered.T @ y_centered
 
         # Use Ridge with alpha = 1.0 for a starting guess
@@ -132,23 +263,58 @@ class Lasso(object):
         self.R2_train = 1.0 - self.RMSE_train ** 2.0 / np.average((y - np.average(y)) ** 2.0)
 
     def predict(self, X):
+        """ Calculates predictions given constructed model
+        Parameters:
+            -x: This is an array that holds the independent variables (generally a sample of the data used to construct)
+
+        Returns:
+            Calculated dependent variable
+        """
         return X @ self.beta[1:] + self.beta[0]
 
     def RMSE(self, X=None, y=None):
+        """ Calculates the Root Mean Square Error of the Model
+        Parameters:
+            -x: This is an array that holds the independent variables (generally a sample of the data used to construct)
+            -y: This is an array that holds the dependent variable (generally a sample of the data used to construct)
+
+        Returns:
+            Root Mean Square Error of test-train-split or of the training data if nothing is given
+        """
+
         if X is None or y is None:
             return self.RMSE_train
         return np.sqrt(np.average((self.predict(X) - y) ** 2.0))
 
     def R2(self, X=None, y=None):
+        """ Calculates the R^2 of the Model
+        Parameters:
+            -x: This is an array that holds the independent variable (generally a sample of the data used to construct)
+            -y: This is an array that holds the dependent variable (generally a sample of the data used to construct)
+
+        Returns:
+            R^2 of test-train-split or of the training data if nothing is given
+        """
+
         if X is None or y is None:
             return self.R2_train
         return 1.0 - self.RMSE(X, y) ** 2.0 / np.average((y - np.average(y)) ** 2.0)
 
 
-class PCA(object):
+class PCA:
+    """
+    Constructs an object that identifies the Principal Components of a given dataset. This is an unsupervised method.
+    """
+
     def __init__(self, X):
+        """ Initializes PCA
+        Parameters:
+            -X: This is an array that holds unlabeled data points (n variables, m observations)
+        """
+
         self.average = np.average(X, axis=0)
         self.center = X - self.average
+
         self.cov = self.center.T @ self.center / X.shape[0]
         self.eig_val, self.eig_vec = np.linalg.eigh(self.cov)
         sort_indices = np.argsort(self.eig_val)[::-1]
@@ -158,13 +324,22 @@ class PCA(object):
         self.percent_var = np.cumsum(self.eig_val) / self.variance
 
     def scalar_percent(self, percent=0.9):
+        """ Project Data into lower dimensional space
+        Parameters:
+            -percent: Desired percentage of variance explained
+
+        Returns:
+            Projected Data Points
+        """
         return self.center @ self.eig_vec[:, self.percent_var < percent]
 
     def scalar_num_dim(self, num_dim=2):
+        """ Project Data into lower dimensional space
+        Parameters:
+            -num_dim: Desired number of dimensions to project down to
+
+        Returns:
+            Projected Data Points
+        """
         return self.center @ self.eig_vec[:, :num_dim]
 
-    def vector_percent(self, percent=0.9):
-        return self.scalar_percent(percent) @ self.eig_vec[:, self.percent_var < percent].T + self.center
-
-    def vector_num_dim(self, num_dim=2):
-        return self.scalar_num_dim(num_dim) @ self.eig_vec[:, :num_dim].T + self.center
