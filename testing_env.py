@@ -3,18 +3,18 @@ from root_finding import *
 import matplotlib.pyplot as plt
 
 
-'''
 def f(t, y):
     return np.sin(10*t)
 
-t = np.linspace(0, np.pi, 1000)
-n = 50
-sol_e = euler(f, 1, 0, np.pi, n)
-sol_r = rk4(f, 1, 0, np.pi, n)
 
-plt.plot(sol_e[:,0], sol_e[:,1], sol_r[:,0], sol_r[:,1])
+t = np.linspace(0, np.pi, 1000)
+n = 100
+sol_e = euler(f, 1, 0, np.pi, n)
+sol_eb = backward_euler(f, 1, 0, np.pi, n)
+
+plt.plot(sol_e[:,0], sol_e[:,1], sol_eb[:,0], sol_eb[:,1])
 plt.plot(t,-1/10*np.cos(10*t)+11/10)
-plt.legend(['Euler', 'RK4', 'Exact'])
+plt.legend(['Euler', 'Back Euler', 'Exact'])
 plt.show()
 '''
 
@@ -22,8 +22,10 @@ plt.show()
 def f(x):
     return x**3 - x - 2
 
+
 def f_prime(x):
     return 3*x**2 - 1
+
 
 print('\n\n\n\n\n')
 
@@ -50,3 +52,4 @@ print('----------------------------')
 x = secant_method(f, 1, 2)
 print(x)
 print('\n')
+'''
