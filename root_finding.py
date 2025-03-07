@@ -66,3 +66,18 @@ def secant_method(f, x_0, x_1, tol = 1e-4, max_itr = 100):
 
     print('Maximum iterations reached')
     return x_1
+
+def steffensen_method(f, x_0, tol = 1e-4, max_itr = 100):
+    x = x_0
+    for i in range(max_itr):
+        s = f(x + f(x))/(f(x)-1)
+        x_n = x - (f(x) / s)
+
+        if abs(x_n - x) < tol:
+            print(f'Root within tolerance found after {i} iterations.')
+            return x
+
+        x = x_n
+
+    print('Maximum iterations reached')
+    return x

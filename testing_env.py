@@ -2,7 +2,7 @@ from ode_solvers import *
 from root_finding import *
 import matplotlib.pyplot as plt
 
-
+'''
 def f(t, y):
     return np.sin(10*t)
 
@@ -52,4 +52,9 @@ print('----------------------------')
 x = secant_method(f, 1, 2)
 print(x)
 print('\n')
-'''
+
+print('Steffensen’s Method')
+print('----------------------------')
+x = steffensen_method(f, 1)
+print(x)
+print('\n')
